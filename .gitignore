@@ -16,3 +16,9 @@ dist
 
 # VSCode
 .vscode
+
+# Local credentials: accessKey / secretKey / bucket must never be committed.
+# Use example-config.yaml as the template.
+config.yaml
+config.local.yaml
+*.faust.yaml

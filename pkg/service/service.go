@@ -61,6 +61,9 @@ type (
 		credentials   *qbox.Mac
 		bucketManager *storage.BucketManager
 		uploader      *qu.UploadManager
+		// 经典表单上传器：只有它单次上传的 etag 是 base64(md5)，
+		// 「只传变更文件」靠它比对。详见 object.go 顶部注释。
+		formUploader *storage.FormUploader
 	}
 )
 
@@ -89,6 +92,7 @@ func NewQiniuService(cfg *QServiceConfig) *QiniuService {
 				Credentials: mac,
 			},
 		}),
+		formUploader: storage.NewFormUploader(storage.NewConfig()),
 	}
 }
 

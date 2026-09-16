@@ -41,9 +41,13 @@ func (o *GlobalOptions) NewDeleteOptions() *DeleteOptions {
 
 type UploadOptions struct {
 	*GlobalOptions
-	ImagePath string
-	CertPath  string
-	KeyPath   string
+	ImagePath   string
+	CertPath    string
+	KeyPath     string
+	FilePath    string
+	RemoteKey   string
+	ContentType string
+	RefreshCDN  bool
 }
 
 func (o *UploadOptions) Flags() []cli.Flag {
@@ -63,6 +67,31 @@ func (o *UploadOptions) Flags() []cli.Flag {
 			Name:        "key",
 			Usage:       "`file` path of private key to be uploaded",
 			Destination: &o.KeyPath,
+		},
+		// 下面是通用文件上传（js/css/wasm…）。注意 --key 已被证书私钥占用，
+		// 远端 key 用 --remote，别复用。
+		&cli.StringFlag{
+			Name:        "file",
+			Aliases:     []string{"f"},
+			Usage:       "`file` path of an arbitrary file to be uploaded (non-image)",
+			Destination: &o.FilePath,
+		},
+		&cli.StringFlag{
+			Name:        "remote",
+			Aliases:     []string{"r"},
+			Usage:       "remote object `key` for --file, e.g. saveupload/saveupload.min.js",
+			Destination: &o.RemoteKey,
+		},
+		&cli.StringFlag{
+			Name:        "content-type",
+			Usage:       "force this MIME type instead of inferring from the extension",
+			Destination: &o.ContentType,
+		},
+		&cli.BoolFlag{
+			Name:        "refresh-cdn",
+			Usage:       "refresh the CDN cache of the uploaded object (only for --file)",
+			Value:       true,
+			Destination: &o.RefreshCDN,
 		},
 	}
 }
